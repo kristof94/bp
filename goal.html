@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Objectif d'Épargne - Planificateur de Budget</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .back-link {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            text-decoration: none;
+            font-size: 1.5em;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            padding-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .summary h3 {
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .summary-item {
+            background: rgba(255,255,255,0.2);
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .summary-item .label {
+            font-size: 0.7em;
+            opacity: 0.9;
+            margin-bottom: 3px;
+        }
+
+        .summary-item .value {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .goal-input-section {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .goal-input-section h3 {
+            font-size: 1em;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+            opacity: 0.95;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            background: white;
+        }
+
+        .goal-result {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .goal-result h3 {
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            opacity: 0.95;
+        }
+
+        .goal-result .amount {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .adjusted-budgets {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .adjusted-budgets h3 {
+            font-size: 1em;
+            color: #667eea;
+            margin-bottom: 12px;
+        }
+
+        .adjusted-budget-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+        .adjusted-budget-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .adjusted-budget-item .label {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        .adjusted-budget-item .value {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .projections {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .projections h3 {
+            font-size: 1em;
+            margin-bottom: 12px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .projection-category {
+            margin-bottom: 15px;
+        }
+
+        .projection-category:last-child {
+            margin-bottom: 0;
+        }
+
+        .projection-title {
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            font-weight: 600;
+            opacity: 0.95;
+        }
+
+        .projection-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .projection-item {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 8px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .projection-item .period {
+            font-size: 0.75em;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .projection-item .amount {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .warning {
+            background: #ff6b6b;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+            font-size: 0.85em;
+        }
+
+        .warning.active {
+            display: block;
+        }
+
+        /* Desktop styles */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            .container {
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                min-height: auto;
+            }
+
+            .header {
+                padding: 30px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+                margin-bottom: 10px;
+            }
+
+            .header p {
+                font-size: 1em;
+            }
+
+            .back-link {
+                left: 30px;
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 30px;
+            }
+
+            .section {
+                margin-bottom: 30px;
+            }
+
+            .summary {
+                position: relative;
+                padding: 25px;
+                margin-top: 30px;
+                border-radius: 10px;
+            }
+
+            .summary h3 {
+                font-size: 1.1em;
+                margin-bottom: 10px;
+            }
+
+            .summary-grid {
+                gap: 15px;
+            }
+
+            .summary-item {
+                padding: 15px;
+            }
+
+            .summary-item .label {
+                font-size: 0.9em;
+            }
+
+            .summary-item .value {
+                font-size: 1.8em;
+            }
+
+            .goal-input-section {
+                padding: 20px;
+            }
+
+            .goal-input-section h3 {
+                font-size: 1.2em;
+                margin-bottom: 15px;
+            }
+
+            .goal-result {
+                padding: 25px;
+            }
+
+            .goal-result h3 {
+                font-size: 1em;
+            }
+
+            .goal-result .amount {
+                font-size: 2.5em;
+            }
+
+            .adjusted-budgets {
+                padding: 20px;
+            }
+
+            .adjusted-budgets h3 {
+                font-size: 1.2em;
+            }
+
+            .projections {
+                padding: 20px;
+            }
+
+            .projections h3 {
+                font-size: 1.2em;
+                margin-bottom: 15px;
+            }
+
+            .projection-grid {
+                gap: 12px;
+            }
+
+            .projection-item {
+                padding: 15px 10px;
+            }
+
+            .projection-item .amount {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-link">←</a>
+            <h1>🎯 Objectif d'Épargne</h1>
+            <p>Planifiez votre épargne intelligemment</p>
+        </div>
+
+        <div class="content">
+            <!-- Résumé sticky -->
+            <div class="summary">
+                <h3>🎯 Objectif d'épargne</h3>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="label">Objectif</div>
+                        <div class="value" id="goal-target">10 000 €</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">Durée</div>
+                        <div class="value" id="goal-duration">12 mois</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">Par mois</div>
+                        <div class="value" id="goal-monthly">833 €</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saisie de l'objectif -->
+            <div class="section">
+                <div class="goal-input-section">
+                    <h3>💎 Définir mon objectif</h3>
+                    <div class="input-group">
+                        <label>Montant à économiser (€)</label>
+                        <input type="number" id="goal-amount" value="10000" min="0" step="100">
+                    </div>
+                    <div class="input-group">
+                        <label>Durée (mois)</label>
+                        <select id="goal-months">
+                            <option value="3">3 mois</option>
+                            <option value="6">6 mois</option>
+                            <option value="12" selected>12 mois</option>
+                            <option value="18">18 mois</option>
+                            <option value="24">24 mois</option>
+                            <option value="36">36 mois</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Résultat -->
+            <div class="section">
+                <div class="goal-result">
+                    <h3>Épargne mensuelle nécessaire</h3>
+                    <div class="amount" id="goal-monthly-display">833 €</div>
+                </div>
+            </div>
+
+            <!-- Message si impossible -->
+            <div class="warning" id="goal-warning">
+                ⚠️ Objectif impossible ! L'épargne mensuelle dépasse votre budget disponible.
+            </div>
+
+            <!-- Budgets ajustés -->
+            <div class="section" id="adjusted-section">
+                <div class="adjusted-budgets">
+                    <h3>🎯 Budgets ajustés automatiquement</h3>
+                    <div class="adjusted-budget-item">
+                        <span class="label">💎 Épargne</span>
+                        <span class="value" id="adjusted-epargne">833 €</span>
+                    </div>
+                    <div class="adjusted-budget-item">
+                        <span class="label">✈️ Vacances</span>
+                        <span class="value" id="adjusted-vacances">500 €</span>
+                    </div>
+                    <div class="adjusted-budget-item">
+                        <span class="label">🎮 Loisirs</span>
+                        <span class="value" id="adjusted-loisirs">500 €</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prévisions avec objectif -->
+            <div class="section">
+                <div class="projections">
+                    <h3>📊 Projection d'épargne</h3>
+
+                    <div class="projection-category">
+                        <div class="projection-title">💎 Évolution de l'épargne</div>
+                        <div class="projection-grid">
+                            <div class="projection-item">
+                                <div class="period">6 mois</div>
+                                <div class="amount" id="goal-epargne-6m">5 000 €</div>
+                            </div>
+                            <div class="projection-item">
+                                <div class="period">12 mois</div>
+                                <div class="amount" id="goal-epargne-12m">10 000 €</div>
+                            </div>
+                            <div class="projection-item">
+                                <div class="period">24 mois</div>
+                                <div class="amount" id="goal-epargne-24m">20 000 €</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const salaire = 3500;
+        const chargesFixes = 1667;
+        const restantDisponible = salaire - chargesFixes;
+
+        // Éléments de la page
+        const goalAmount = document.getElementById('goal-amount');
+        const goalMonths = document.getElementById('goal-months');
+        const goalTarget = document.getElementById('goal-target');
+        const goalDuration = document.getElementById('goal-duration');
+        const goalMonthly = document.getElementById('goal-monthly');
+        const goalMonthlyDisplay = document.getElementById('goal-monthly-display');
+        const goalWarning = document.getElementById('goal-warning');
+        const adjustedSection = document.getElementById('adjusted-section');
+        const adjustedEpargne = document.getElementById('adjusted-epargne');
+        const adjustedVacances = document.getElementById('adjusted-vacances');
+        const adjustedLoisirs = document.getElementById('adjusted-loisirs');
+        const goalEpargne6m = document.getElementById('goal-epargne-6m');
+        const goalEpargne12m = document.getElementById('goal-epargne-12m');
+        const goalEpargne24m = document.getElementById('goal-epargne-24m');
+
+        function updateGoal() {
+            const target = parseFloat(goalAmount.value);
+            const months = parseFloat(goalMonths.value);
+            const monthlyNeeded = target / months;
+
+            // Mise à jour du résumé
+            goalTarget.textContent = target.toFixed(0) + ' €';
+            goalDuration.textContent = months + ' mois';
+            goalMonthly.textContent = monthlyNeeded.toFixed(0) + ' €';
+            goalMonthlyDisplay.textContent = monthlyNeeded.toFixed(0) + ' €';
+
+            // Vérifier si c'est possible
+            if (monthlyNeeded > restantDisponible) {
+                goalWarning.classList.add('active');
+                adjustedSection.style.display = 'none';
+            } else {
+                goalWarning.classList.remove('active');
+                adjustedSection.style.display = 'block';
+
+                // Calculer les budgets ajustés
+                const remaining = restantDisponible - monthlyNeeded;
+                const vacancesAdjusted = Math.round(remaining * 0.5);
+                const loisirsAdjusted = remaining - vacancesAdjusted;
+
+                adjustedEpargne.textContent = monthlyNeeded.toFixed(0) + ' €';
+                adjustedVacances.textContent = vacancesAdjusted.toFixed(0) + ' €';
+                adjustedLoisirs.textContent = loisirsAdjusted.toFixed(0) + ' €';
+
+                // Mise à jour des prévisions
+                goalEpargne6m.textContent = (monthlyNeeded * 6).toFixed(0) + ' €';
+                goalEpargne12m.textContent = (monthlyNeeded * 12).toFixed(0) + ' €';
+                goalEpargne24m.textContent = (monthlyNeeded * 24).toFixed(0) + ' €';
+            }
+        }
+
+        goalAmount.addEventListener('input', updateGoal);
+        goalMonths.addEventListener('change', updateGoal);
+
+        // Initialisation
+        updateGoal();
+    </script>
+</body>
+</html>
