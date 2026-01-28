@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Récapitulatif - Planificateur de Budget</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .back-link {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            text-decoration: none;
+            font-size: 1.5em;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            padding-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .summary h3 {
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .summary-item {
+            background: rgba(255,255,255,0.2);
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .summary-item .label {
+            font-size: 0.7em;
+            opacity: 0.9;
+            margin-bottom: 3px;
+        }
+
+        .summary-item .value {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .period-selector {
+            display: flex;
+            gap: 8px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .period-btn {
+            flex: 1;
+            min-width: 80px;
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        .period-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .period-btn:active {
+            transform: scale(0.95);
+        }
+
+        .projections-overview {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .projections-overview h3 {
+            font-size: 1em;
+            margin-bottom: 12px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .projection-total {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .projection-total .label {
+            font-size: 0.85em;
+            opacity: 0.95;
+            margin-bottom: 5px;
+        }
+
+        .projection-total .amount {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .budgets-detail {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .budgets-detail h3 {
+            font-size: 1em;
+            color: #667eea;
+            margin-bottom: 12px;
+        }
+
+        .budget-row {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 3px solid #667eea;
+        }
+
+        .budget-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .budget-row-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .budget-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .budget-monthly {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1em;
+        }
+
+        .budget-projection {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+
+        .budget-projection .label {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .budget-projection .amount {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .totals-section {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .totals-section h3 {
+            font-size: 1em;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .total-row:last-child {
+            margin-bottom: 0;
+            background: rgba(255,255,255,0.3);
+        }
+
+        .total-row .label {
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .total-row .value {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 12px;
+            border-radius: 6px;
+            color: #1565c0;
+            font-size: 0.85em;
+            margin-top: 15px;
+        }
+
+        /* Desktop styles */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            .container {
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                min-height: auto;
+            }
+
+            .header {
+                padding: 30px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+                margin-bottom: 10px;
+            }
+
+            .header p {
+                font-size: 1em;
+            }
+
+            .back-link {
+                left: 30px;
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 30px;
+            }
+
+            .section {
+                margin-bottom: 30px;
+            }
+
+            .summary {
+                position: relative;
+                padding: 25px;
+                margin-top: 30px;
+                border-radius: 10px;
+            }
+
+            .summary h3 {
+                font-size: 1.1em;
+                margin-bottom: 10px;
+            }
+
+            .summary-grid {
+                gap: 15px;
+            }
+
+            .summary-item {
+                padding: 15px;
+            }
+
+            .summary-item .label {
+                font-size: 0.9em;
+            }
+
+            .summary-item .value {
+                font-size: 1.8em;
+            }
+
+            .period-selector {
+                padding: 20px;
+            }
+
+            .period-btn {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+
+            .projections-overview {
+                padding: 25px;
+            }
+
+            .projections-overview h3 {
+                font-size: 1.3em;
+            }
+
+            .projection-total .amount {
+                font-size: 3em;
+            }
+
+            .budgets-detail {
+                padding: 20px;
+            }
+
+            .budgets-detail h3 {
+                font-size: 1.2em;
+            }
+
+            .totals-section {
+                padding: 20px;
+            }
+
+            .totals-section h3 {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-link">←</a>
+            <h1>📊 Récapitulatif Global</h1>
+            <p>Vue d'ensemble de vos économies</p>
+        </div>
+
+        <div class="content">
+            <!-- Résumé sticky -->
+            <div class="summary">
+                <h3>💰 Budget mensuel</h3>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="label">Total alloué</div>
+                        <div class="value" id="monthly-total">1 600 €</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">Reste disponible</div>
+                        <div class="value" id="monthly-remaining">233 €</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sélecteur de période -->
+            <div class="section">
+                <div class="period-selector">
+                    <button class="period-btn" data-months="3">3 mois</button>
+                    <button class="period-btn active" data-months="6">6 mois</button>
+                    <button class="period-btn" data-months="12">12 mois</button>
+                    <button class="period-btn" data-months="24">24 mois</button>
+                    <button class="period-btn" data-months="36">36 mois</button>
+                </div>
+            </div>
+
+            <!-- Vue d'ensemble -->
+            <div class="section">
+                <div class="projections-overview">
+                    <h3>🎯 Total économisé sur <span id="period-label">6 mois</span></h3>
+                    <div class="projection-total">
+                        <div class="label">Vous économiserez</div>
+                        <div class="amount" id="total-projection">9 600 €</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Détail par budget -->
+            <div class="section">
+                <div class="budgets-detail">
+                    <h3>📋 Détail par catégorie</h3>
+                    <div id="budgets-list">
+                        <!-- Généré dynamiquement -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Totaux -->
+            <div class="section">
+                <div class="totals-section">
+                    <h3>💎 Résumé des économies</h3>
+                    <div class="total-row">
+                        <span class="label">Épargne totale</span>
+                        <span class="value" id="epargne-total">4 200 €</span>
+                    </div>
+                    <div class="total-row">
+                        <span class="label">Vacances totales</span>
+                        <span class="value" id="vacances-total">3 000 €</span>
+                    </div>
+                    <div class="total-row">
+                        <span class="label">Loisirs totaux</span>
+                        <span class="value" id="loisirs-total">2 400 €</span>
+                    </div>
+                    <div class="total-row">
+                        <span class="label">Noël total</span>
+                        <span class="value" id="noel-total">600 €</span>
+                    </div>
+                    <div class="total-row">
+                        <span class="label">Cadeau Maele total</span>
+                        <span class="value" id="maele-total">600 €</span>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    💡 Ces projections sont basées sur vos budgets mensuels actuels. Ajustez-les sur les pages précédentes pour voir les changements.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const salaire = 3500;
+        const chargesFixes = 1667;
+        const restantDisponible = salaire - chargesFixes;
+
+        // Budgets par défaut (peuvent être récupérés depuis localStorage)
+        let budgets = {
+            vacances: 500,
+            loisirs: 400,
+            epargne: 700,
+            noel: 100,
+            maele: 100
+        };
+
+        // Charger les budgets depuis localStorage si disponibles
+        const savedBudgets = localStorage.getItem('budgets');
+        if (savedBudgets) {
+            budgets = JSON.parse(savedBudgets);
+        }
+
+        let customBudgets = [];
+        const savedCustom = localStorage.getItem('customBudgets');
+        if (savedCustom) {
+            customBudgets = JSON.parse(savedCustom);
+        }
+
+        let selectedPeriod = 6;
+
+        // Éléments du DOM
+        const periodButtons = document.querySelectorAll('.period-btn');
+        const periodLabel = document.getElementById('period-label');
+        const totalProjection = document.getElementById('total-projection');
+        const monthlyTotal = document.getElementById('monthly-total');
+        const monthlyRemaining = document.getElementById('monthly-remaining');
+        const budgetsList = document.getElementById('budgets-list');
+        const epargneTotal = document.getElementById('epargne-total');
+        const vacancesTotal = document.getElementById('vacances-total');
+        const loisirsTotal = document.getElementById('loisirs-total');
+        const noelTotal = document.getElementById('noel-total');
+        const maeleTotal = document.getElementById('maele-total');
+
+        // Gestion des boutons de période
+        periodButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                periodButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedPeriod = parseInt(btn.dataset.months);
+                updateProjections();
+            });
+        });
+
+        function updateProjections() {
+            // Texte de la période
+            periodLabel.textContent = selectedPeriod + ' mois';
+
+            // Calculer les totaux
+            const monthlyBudgetTotal = Object.values(budgets).reduce((sum, val) => sum + val, 0) +
+                                       customBudgets.reduce((sum, b) => sum + b.amount, 0);
+            const totalProj = monthlyBudgetTotal * selectedPeriod;
+
+            // Mise à jour du résumé mensuel
+            monthlyTotal.textContent = monthlyBudgetTotal.toFixed(0) + ' €';
+            monthlyRemaining.textContent = (restantDisponible - monthlyBudgetTotal).toFixed(0) + ' €';
+
+            // Mise à jour de la projection totale
+            totalProjection.textContent = totalProj.toLocaleString('fr-FR') + ' €';
+
+            // Mise à jour des totaux par catégorie
+            epargneTotal.textContent = ((budgets.epargne || 0) * selectedPeriod).toLocaleString('fr-FR') + ' €';
+            vacancesTotal.textContent = ((budgets.vacances || 0) * selectedPeriod).toLocaleString('fr-FR') + ' €';
+            loisirsTotal.textContent = ((budgets.loisirs || 0) * selectedPeriod).toLocaleString('fr-FR') + ' €';
+            noelTotal.textContent = ((budgets.noel || 0) * selectedPeriod).toLocaleString('fr-FR') + ' €';
+            maeleTotal.textContent = ((budgets.maele || 0) * selectedPeriod).toLocaleString('fr-FR') + ' €';
+
+            // Générer la liste détaillée
+            let budgetsHTML = '';
+
+            // Budgets de base
+            const baseBudgets = [
+                { name: '✈️ Vacances', key: 'vacances', amount: budgets.vacances || 0 },
+                { name: '🎮 Loisirs', key: 'loisirs', amount: budgets.loisirs || 0 },
+                { name: '💎 Épargne', key: 'epargne', amount: budgets.epargne || 0 },
+                { name: '🎄 Noël', key: 'noel', amount: budgets.noel || 0 },
+                { name: '🎁 Cadeau pour Maele', key: 'maele', amount: budgets.maele || 0 }
+            ];
+
+            baseBudgets.forEach(budget => {
+                if (budget.amount > 0) {
+                    const projection = budget.amount * selectedPeriod;
+                    budgetsHTML += `
+                        <div class="budget-row">
+                            <div class="budget-row-header">
+                                <span class="budget-name">${budget.name}</span>
+                                <span class="budget-monthly">${budget.amount.toFixed(0)} €/mois</span>
+                            </div>
+                            <div class="budget-projection">
+                                <span class="label">Total sur ${selectedPeriod} mois</span>
+                                <span class="amount">${projection.toLocaleString('fr-FR')} €</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            // Budgets personnalisés
+            customBudgets.forEach(budget => {
+                if (budget.amount > 0) {
+                    const projection = budget.amount * selectedPeriod;
+                    budgetsHTML += `
+                        <div class="budget-row">
+                            <div class="budget-row-header">
+                                <span class="budget-name">${budget.name}</span>
+                                <span class="budget-monthly">${budget.amount.toFixed(0)} €/mois</span>
+                            </div>
+                            <div class="budget-projection">
+                                <span class="label">Total sur ${selectedPeriod} mois</span>
+                                <span class="amount">${projection.toLocaleString('fr-FR')} €</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            if (!budgetsHTML) {
+                budgetsHTML = '<div style="text-align: center; color: #999; padding: 20px;">Aucun budget configuré</div>';
+            }
+
+            budgetsList.innerHTML = budgetsHTML;
+        }
+
+        // Initialisation
+        updateProjections();
+    </script>
+</body>
+</html>

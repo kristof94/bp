@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Personnalisé - Planificateur de Budget</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .back-link {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            text-decoration: none;
+            font-size: 1.5em;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            padding-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .summary h3 {
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .summary-item {
+            background: rgba(255,255,255,0.2);
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .summary-item .label {
+            font-size: 0.7em;
+            opacity: 0.9;
+            margin-bottom: 3px;
+        }
+
+        .summary-item .value {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .add-budget-section {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .add-budget-section h3 {
+            font-size: 1em;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .input-row input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+
+        .input-row button {
+            padding: 10px 20px;
+            background: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            color: #11998e;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s;
+        }
+
+        .input-row button:active {
+            background: #f0f0f0;
+        }
+
+        .budget-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .budget-list h3 {
+            font-size: 1em;
+            color: #667eea;
+            margin-bottom: 12px;
+        }
+
+        .budget-item-custom {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 3px solid #667eea;
+        }
+
+        .budget-item-custom:last-child {
+            margin-bottom: 0;
+        }
+
+        .budget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .budget-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .budget-remove {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .budget-remove:active {
+            background: #ff5252;
+        }
+
+        .slider-container {
+            margin-bottom: 8px;
+        }
+
+        .input-with-slider {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .input-with-slider input[type="number"] {
+            width: 100px;
+            padding: 8px;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #667eea;
+            text-align: center;
+        }
+
+        .input-with-slider input[type="number"]:focus {
+            outline: none;
+            border-color: #5568d3;
+        }
+
+        .input-with-slider .slider {
+            flex: 1;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+        }
+
+        .budget-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .budget-value {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .budget-percentage {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .warning {
+            background: #ff6b6b;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+            font-size: 0.85em;
+        }
+
+        .warning.active {
+            display: block;
+        }
+
+        .fixed-budgets {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .fixed-budgets h3 {
+            font-size: 1em;
+            color: #2e7d32;
+            margin-bottom: 12px;
+        }
+
+        .fixed-budget-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 3px solid #4caf50;
+        }
+
+        .fixed-budget-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .fixed-budget-label {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95em;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .fixed-budget-value {
+            font-weight: bold;
+            color: #4caf50;
+            font-size: 1.1em;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        /* Desktop styles */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            .container {
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                min-height: auto;
+            }
+
+            .header {
+                padding: 30px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+                margin-bottom: 10px;
+            }
+
+            .header p {
+                font-size: 1em;
+            }
+
+            .back-link {
+                left: 30px;
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 30px;
+            }
+
+            .section {
+                margin-bottom: 30px;
+            }
+
+            .summary {
+                position: relative;
+                padding: 25px;
+                margin-top: 30px;
+                border-radius: 10px;
+            }
+
+            .summary h3 {
+                font-size: 1.1em;
+                margin-bottom: 10px;
+            }
+
+            .summary-grid {
+                gap: 15px;
+            }
+
+            .summary-item {
+                padding: 15px;
+            }
+
+            .summary-item .label {
+                font-size: 0.9em;
+            }
+
+            .summary-item .value {
+                font-size: 1.8em;
+            }
+
+            .add-budget-section {
+                padding: 20px;
+            }
+
+            .add-budget-section h3 {
+                font-size: 1.2em;
+                margin-bottom: 15px;
+            }
+
+            .budget-list {
+                padding: 20px;
+            }
+
+            .budget-list h3 {
+                font-size: 1.2em;
+            }
+
+            .fixed-budgets {
+                padding: 20px;
+            }
+
+            .fixed-budgets h3 {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-link">←</a>
+            <h1>🎨 Budget Personnalisé</h1>
+            <p>Ajoutez vos propres catégories</p>
+            <a href="recap.html" class="nav-link" style="display: inline-block; background: rgba(255,255,255,0.3); padding: 8px 15px; border-radius: 20px; color: white; text-decoration: none; font-size: 0.85em; margin-top: 10px; font-weight: 600;">📊 Récapitulatif</a>
+        </div>
+
+        <div class="content">
+            <!-- Résumé sticky -->
+            <div class="summary">
+                <h3>📊 Vue globale</h3>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="label">Budget total</div>
+                        <div class="value" id="total-budget">1 600 €</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">Reste disponible</div>
+                        <div class="value" id="remaining-budget">233 €</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">% utilisé</div>
+                        <div class="value" id="usage-percent">87%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budgets fixes -->
+            <div class="section">
+                <div class="fixed-budgets">
+                    <h3>✅ Budgets de base</h3>
+                    <div class="fixed-budget-item">
+                        <span class="fixed-budget-label">✈️ Vacances</span>
+                        <div class="input-with-slider">
+                            <input type="number" min="0" max="1833" value="500" id="input-vacances" oninput="updateFixedBudgetFromInput('vacances', parseFloat(this.value) || 0)">
+                            <input type="range" min="0" max="1833" value="500" class="slider" id="slider-vacances" oninput="updateFixedBudget('vacances', parseFloat(this.value))">
+                        </div>
+                        <div class="budget-display">
+                            <span class="fixed-budget-value" id="value-vacances">500 €</span>
+                            <span class="budget-percentage" id="percent-vacances">27%</span>
+                        </div>
+                    </div>
+                    <div class="fixed-budget-item">
+                        <span class="fixed-budget-label">🎮 Loisirs</span>
+                        <div class="input-with-slider">
+                            <input type="number" min="0" max="1833" value="400" id="input-loisirs" oninput="updateFixedBudgetFromInput('loisirs', parseFloat(this.value) || 0)">
+                            <input type="range" min="0" max="1833" value="400" class="slider" id="slider-loisirs" oninput="updateFixedBudget('loisirs', parseFloat(this.value))">
+                        </div>
+                        <div class="budget-display">
+                            <span class="fixed-budget-value" id="value-loisirs">400 €</span>
+                            <span class="budget-percentage" id="percent-loisirs">22%</span>
+                        </div>
+                    </div>
+                    <div class="fixed-budget-item">
+                        <span class="fixed-budget-label">💎 Épargne</span>
+                        <div class="input-with-slider">
+                            <input type="number" min="0" max="1833" value="700" id="input-epargne" oninput="updateFixedBudgetFromInput('epargne', parseFloat(this.value) || 0)">
+                            <input type="range" min="0" max="1833" value="700" class="slider" id="slider-epargne" oninput="updateFixedBudget('epargne', parseFloat(this.value))">
+                        </div>
+                        <div class="budget-display">
+                            <span class="fixed-budget-value" id="value-epargne">700 €</span>
+                            <span class="budget-percentage" id="percent-epargne">38%</span>
+                        </div>
+                    </div>
+                    <div class="fixed-budget-item">
+                        <span class="fixed-budget-label">🎄 Noël</span>
+                        <div class="input-with-slider">
+                            <input type="number" min="0" max="1833" value="100" id="input-noel" oninput="updateFixedBudgetFromInput('noel', parseFloat(this.value) || 0)">
+                            <input type="range" min="0" max="1833" value="100" class="slider" id="slider-noel" oninput="updateFixedBudget('noel', parseFloat(this.value))">
+                        </div>
+                        <div class="budget-display">
+                            <span class="fixed-budget-value" id="value-noel">100 €</span>
+                            <span class="budget-percentage" id="percent-noel">5%</span>
+                        </div>
+                    </div>
+                    <div class="fixed-budget-item">
+                        <span class="fixed-budget-label">🎁 Cadeau pour Maele</span>
+                        <div class="input-with-slider">
+                            <input type="number" min="0" max="1833" value="100" id="input-maele" oninput="updateFixedBudgetFromInput('maele', parseFloat(this.value) || 0)">
+                            <input type="range" min="0" max="1833" value="100" class="slider" id="slider-maele" oninput="updateFixedBudget('maele', parseFloat(this.value))">
+                        </div>
+                        <div class="budget-display">
+                            <span class="fixed-budget-value" id="value-maele">100 €</span>
+                            <span class="budget-percentage" id="percent-maele">5%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ajouter un budget -->
+            <div class="section">
+                <div class="add-budget-section">
+                    <h3>➕ Ajouter une catégorie</h3>
+                    <div class="input-row">
+                        <input type="text" id="new-budget-name" placeholder="Nom de la catégorie (ex: Restaurant)" maxlength="30">
+                        <button id="add-budget-btn">Ajouter</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message d'avertissement -->
+            <div class="warning" id="warning">
+                ⚠️ Attention ! Votre budget total dépasse le montant disponible !
+            </div>
+
+            <!-- Liste des budgets personnalisés -->
+            <div class="section">
+                <div class="budget-list">
+                    <h3>🎯 Mes catégories personnalisées</h3>
+                    <div id="custom-budgets-container">
+                        <div class="empty-state">
+                            Aucune catégorie personnalisée.<br>
+                            Ajoutez-en une ci-dessus !
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const salaire = 3500;
+        const chargesFixes = 1667;
+        const restantDisponible = salaire - chargesFixes;
+
+        // Budgets fixes (de la page principale)
+        const fixedBudgets = {
+            vacances: 500,
+            loisirs: 400,
+            epargne: 700,
+            noel: 100,
+            maele: 100
+        };
+
+        // Fonction pour mettre à jour les budgets fixes
+        function updateFixedBudget(type, amount) {
+            fixedBudgets[type] = amount;
+            // Mettre à jour l'input numérique
+            const inputEl = document.getElementById(`input-${type}`);
+            if (inputEl) inputEl.value = amount.toFixed(0);
+            updateSummary();
+        }
+
+        // Fonction pour mettre à jour depuis l'input numérique
+        function updateFixedBudgetFromInput(type, amount) {
+            // Limiter la valeur
+            if (amount > restantDisponible) amount = restantDisponible;
+            if (amount < 0) amount = 0;
+
+            fixedBudgets[type] = amount;
+            // Mettre à jour le slider
+            const sliderEl = document.getElementById(`slider-${type}`);
+            if (sliderEl) sliderEl.value = amount;
+            updateSummary();
+        }
+
+        // Budgets personnalisés
+        let customBudgets = [];
+
+        // Éléments du DOM
+        const newBudgetName = document.getElementById('new-budget-name');
+        const addBudgetBtn = document.getElementById('add-budget-btn');
+        const customBudgetsContainer = document.getElementById('custom-budgets-container');
+        const totalBudgetEl = document.getElementById('total-budget');
+        const remainingBudgetEl = document.getElementById('remaining-budget');
+        const usagePercentEl = document.getElementById('usage-percent');
+        const warning = document.getElementById('warning');
+
+        // Ajouter un budget
+        addBudgetBtn.addEventListener('click', addCustomBudget);
+        newBudgetName.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addCustomBudget();
+        });
+
+        function addCustomBudget() {
+            const name = newBudgetName.value.trim();
+            if (!name) {
+                alert('Veuillez entrer un nom pour la catégorie');
+                return;
+            }
+
+            const id = 'custom_' + Date.now();
+            customBudgets.push({
+                id: id,
+                name: name,
+                amount: 0
+            });
+
+            newBudgetName.value = '';
+            renderCustomBudgets();
+            updateSummary();
+        }
+
+        function removeCustomBudget(id) {
+            customBudgets = customBudgets.filter(b => b.id !== id);
+            renderCustomBudgets();
+            updateSummary();
+        }
+
+        function updateCustomBudget(id, amount) {
+            const budget = customBudgets.find(b => b.id === id);
+            if (budget) {
+                budget.amount = amount;
+                // Mettre à jour l'input numérique
+                const inputEl = document.getElementById(`input-${id}`);
+                if (inputEl) inputEl.value = amount.toFixed(0);
+                updateSummary();
+            }
+        }
+
+        function updateCustomBudgetFromInput(id, amount) {
+            // Limiter la valeur
+            if (amount > restantDisponible) amount = restantDisponible;
+            if (amount < 0) amount = 0;
+
+            const budget = customBudgets.find(b => b.id === id);
+            if (budget) {
+                budget.amount = amount;
+                // Mettre à jour le slider
+                const sliderEl = document.getElementById(`slider-${id}`);
+                if (sliderEl) sliderEl.value = amount;
+                updateSummary();
+            }
+        }
+
+        function updateCustomBudgetFromInput(id, amount) {
+            // Limiter la valeur
+            if (amount > restantDisponible) amount = restantDisponible;
+            if (amount < 0) amount = 0;
+
+            const budget = customBudgets.find(b => b.id === id);
+            if (budget) {
+                budget.amount = amount;
+                // Mettre à jour le slider
+                const sliderEl = document.getElementById(`slider-${id}`);
+                if (sliderEl) sliderEl.value = amount;
+                updateSummary();
+            }
+        }
+
+        function renderCustomBudgets() {
+            if (customBudgets.length === 0) {
+                customBudgetsContainer.innerHTML = `
+                    <div class="empty-state">
+                        Aucune catégorie personnalisée.<br>
+                        Ajoutez-en une ci-dessus !
+                    </div>
+                `;
+                return;
+            }
+
+            customBudgetsContainer.innerHTML = customBudgets.map(budget => `
+                <div class="budget-item-custom" id="budget-${budget.id}">
+                    <div class="budget-header">
+                        <span class="budget-name">${budget.name}</span>
+                        <button class="budget-remove" onclick="removeCustomBudget('${budget.id}')">✕</button>
+                    </div>
+                    <div class="input-with-slider">
+                        <input type="number" min="0" max="${restantDisponible}" value="${budget.amount.toFixed(0)}"
+                               id="input-${budget.id}"
+                               oninput="updateCustomBudgetFromInput('${budget.id}', parseFloat(this.value) || 0)">
+                        <input type="range" min="0" max="${restantDisponible}" value="${budget.amount}"
+                               class="slider" id="slider-${budget.id}"
+                               oninput="updateCustomBudget('${budget.id}', parseFloat(this.value))">
+                    </div>
+                    <div class="budget-display">
+                        <span class="budget-value" id="value-${budget.id}">${budget.amount.toFixed(2)} €</span>
+                        <span class="budget-percentage" id="percent-${budget.id}">${Math.round((budget.amount / restantDisponible) * 100)}%</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateSummary() {
+            // Calculer le total des budgets fixes
+            const fixedTotal = Object.values(fixedBudgets).reduce((sum, val) => sum + val, 0);
+
+            // Calculer le total des budgets personnalisés
+            const customTotal = customBudgets.reduce((sum, b) => sum + b.amount, 0);
+
+            // Total général
+            const total = fixedTotal + customTotal;
+            const remaining = restantDisponible - total;
+            const usagePercent = Math.round((total / restantDisponible) * 100);
+
+            // Mettre à jour l'affichage
+            totalBudgetEl.textContent = total.toFixed(0) + ' €';
+            remainingBudgetEl.textContent = remaining.toFixed(0) + ' €';
+            usagePercentEl.textContent = usagePercent + '%';
+
+            // Mettre à jour les budgets fixes
+            Object.keys(fixedBudgets).forEach(key => {
+                const valueEl = document.getElementById(`value-${key}`);
+                const percentEl = document.getElementById(`percent-${key}`);
+                if (valueEl) valueEl.textContent = fixedBudgets[key].toFixed(0) + ' €';
+                if (percentEl) percentEl.textContent = Math.round((fixedBudgets[key] / restantDisponible) * 100) + '%';
+            });
+
+            // Mettre à jour les valeurs individuelles des budgets personnalisés
+            customBudgets.forEach(budget => {
+                const valueEl = document.getElementById(`value-${budget.id}`);
+                const percentEl = document.getElementById(`percent-${budget.id}`);
+                if (valueEl) valueEl.textContent = budget.amount.toFixed(2) + ' €';
+                if (percentEl) percentEl.textContent = Math.round((budget.amount / restantDisponible) * 100) + '%';
+            });
+
+            // Sauvegarder dans localStorage
+            localStorage.setItem('budgets', JSON.stringify(fixedBudgets));
+            localStorage.setItem('customBudgets', JSON.stringify(customBudgets));
+
+            // Avertissement si dépassement
+            if (total > restantDisponible) {
+                warning.classList.add('active');
+            } else {
+                warning.classList.remove('active');
+            }
+        }
+
+        // Initialisation
+        updateSummary();
+    </script>
+</body>
+</html>

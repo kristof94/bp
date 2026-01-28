@@ -604,6 +604,8 @@
             <h1>💰 Mon Budget Mensuel</h1>
             <p>Gérez vos finances intelligemment</p>
             <a href="goal.html" class="nav-link">🎯 Mode Objectif d'épargne</a>
+            <a href="custom.html" class="nav-link">🎨 Budget Personnalisé</a>
+            <a href="recap.html" class="nav-link">📊 Récapitulatif</a>
         </div>
 
         <div class="content">
@@ -718,6 +720,30 @@
                             <span class="budget-percentage" id="epargne-percent">38%</span>
                         </div>
                     </div>
+
+                    <!-- Noël -->
+                    <div class="budget-item">
+                        <label>🎄 Noël</label>
+                        <div class="slider-container">
+                            <input type="range" min="0" max="1833" value="100" class="slider" id="noel">
+                        </div>
+                        <div class="budget-display">
+                            <span class="budget-value" id="noel-value">100,00 €</span>
+                            <span class="budget-percentage" id="noel-percent">5%</span>
+                        </div>
+                    </div>
+
+                    <!-- Cadeau Maele -->
+                    <div class="budget-item">
+                        <label>🎁 Cadeau pour Maele</label>
+                        <div class="slider-container">
+                            <input type="range" min="0" max="1833" value="100" class="slider" id="maele">
+                        </div>
+                        <div class="budget-display">
+                            <span class="budget-value" id="maele-value">100,00 €</span>
+                            <span class="budget-percentage" id="maele-percent">5%</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="warning" id="warning">
@@ -762,6 +788,42 @@
                             <div class="projection-item">
                                 <div class="period">24 mois</div>
                                 <div class="amount" id="epargne-24m">16 800 €</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="projection-category">
+                        <div class="projection-title">🎄 Noël</div>
+                        <div class="projection-grid">
+                            <div class="projection-item">
+                                <div class="period">6 mois</div>
+                                <div class="amount" id="noel-6m">600 €</div>
+                            </div>
+                            <div class="projection-item">
+                                <div class="period">12 mois</div>
+                                <div class="amount" id="noel-12m">1 200 €</div>
+                            </div>
+                            <div class="projection-item">
+                                <div class="period">24 mois</div>
+                                <div class="amount" id="noel-24m">2 400 €</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="projection-category">
+                        <div class="projection-title">🎁 Cadeau pour Maele</div>
+                        <div class="projection-grid">
+                            <div class="projection-item">
+                                <div class="period">6 mois</div>
+                                <div class="amount" id="maele-6m">600 €</div>
+                            </div>
+                            <div class="projection-item">
+                                <div class="period">12 mois</div>
+                                <div class="amount" id="maele-12m">1 200 €</div>
+                            </div>
+                            <div class="projection-item">
+                                <div class="period">24 mois</div>
+                                <div class="amount" id="maele-24m">2 400 €</div>
                             </div>
                         </div>
                     </div>
@@ -881,7 +943,9 @@
         const budgetCategories = [
             { id: 'vacances', name: 'Vacances' },
             { id: 'loisirs', name: 'Loisirs' },
-            { id: 'epargne', name: 'Épargne' }
+            { id: 'epargne', name: 'Épargne' },
+            { id: 'noel', name: 'Noël' },
+            { id: 'maele', name: 'Cadeau pour Maele' }
         ];
 
         // Créer un objet pour stocker les références
@@ -908,6 +972,12 @@
         const epargne6m = document.getElementById('epargne-6m');
         const epargne12m = document.getElementById('epargne-12m');
         const epargne24m = document.getElementById('epargne-24m');
+        const noel6m = document.getElementById('noel-6m');
+        const noel12m = document.getElementById('noel-12m');
+        const noel24m = document.getElementById('noel-24m');
+        const maele6m = document.getElementById('maele-6m');
+        const maele12m = document.getElementById('maele-12m');
+        const maele24m = document.getElementById('maele-24m');
 
         function updateBudget() {
             let total = 0;
@@ -943,6 +1013,26 @@
             epargne6m.textContent = (epargneAmount * 6).toFixed(0) + ' €';
             epargne12m.textContent = (epargneAmount * 12).toFixed(0) + ' €';
             epargne24m.textContent = (epargneAmount * 24).toFixed(0) + ' €';
+
+            const noelAmount = parseFloat(sliders['noel'].value);
+            if (noel6m) noel6m.textContent = (noelAmount * 6).toFixed(0) + ' €';
+            if (noel12m) noel12m.textContent = (noelAmount * 12).toFixed(0) + ' €';
+            if (noel24m) noel24m.textContent = (noelAmount * 24).toFixed(0) + ' €';
+
+            const maeleAmount = parseFloat(sliders['maele'].value);
+            if (maele6m) maele6m.textContent = (maeleAmount * 6).toFixed(0) + ' €';
+            if (maele12m) maele12m.textContent = (maeleAmount * 12).toFixed(0) + ' €';
+            if (maele24m) maele24m.textContent = (maeleAmount * 24).toFixed(0) + ' €';
+
+            // Sauvegarder dans localStorage
+            const budgets = {
+                vacances: parseFloat(sliders['vacances'].value),
+                loisirs: parseFloat(sliders['loisirs'].value),
+                epargne: parseFloat(sliders['epargne'].value),
+                noel: parseFloat(sliders['noel'].value),
+                maele: parseFloat(sliders['maele'].value)
+            };
+            localStorage.setItem('budgets', JSON.stringify(budgets));
 
             // Avertissement si dépassement
             if (total > restantDisponible) {
