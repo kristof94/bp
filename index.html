@@ -251,6 +251,60 @@
             display: block;
         }
 
+        .projections {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .projections h3 {
+            font-size: 1em;
+            margin-bottom: 12px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .projection-category {
+            margin-bottom: 15px;
+        }
+
+        .projection-category:last-child {
+            margin-bottom: 0;
+        }
+
+        .projection-title {
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            font-weight: 600;
+            opacity: 0.95;
+        }
+
+        .projection-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .projection-item {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 8px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .projection-item .period {
+            font-size: 0.75em;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .projection-item .amount {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
         /* Desktop styles */
         @media (min-width: 768px) {
             body {
@@ -336,6 +390,27 @@
 
             .budget-value {
                 font-size: 1.5em;
+            }
+
+            .projections {
+                padding: 20px;
+            }
+
+            .projections h3 {
+                font-size: 1.2em;
+                margin-bottom: 15px;
+            }
+
+            .projection-grid {
+                gap: 12px;
+            }
+
+            .projection-item {
+                padding: 15px 10px;
+            }
+
+            .projection-item .amount {
+                font-size: 1.3em;
             }
         }
     </style>
@@ -465,6 +540,49 @@
                     ⚠️ Attention ! Votre budget dépasse le montant disponible !
                 </div>
             </div>
+
+            <!-- Prévisions -->
+            <div class="section">
+                <div class="projections">
+                    <h3>📊 Prévisions d'économies</h3>
+
+                    <div class="projection-category">
+                        <div class="projection-title">✈️ Budget Vacances</div>
+                        <div class="projection-grid">
+                            <div class="projection-item">
+                                <div class="period">6 mois</div>
+                                <div class="amount" id="vacances-6m">3 000 €</div>
+                            </div>
+                            <div class="projection-item">
+                                <div class="period">12 mois</div>
+                                <div class="amount" id="vacances-12m">6 000 €</div>
+                            </div>
+                            <div class="projection-item">
+                                <div class="period">24 mois</div>
+                                <div class="amount" id="vacances-24m">12 000 €</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="projection-category">
+                        <div class="projection-title">💎 Épargne</div>
+                        <div class="projection-grid">
+                            <div class="projection-item">
+                                <div class="period">6 mois</div>
+                                <div class="amount" id="epargne-6m">4 200 €</div>
+                            </div>
+                            <div class="projection-item">
+                                <div class="period">12 mois</div>
+                                <div class="amount" id="epargne-12m">8 400 €</div>
+                            </div>
+                            <div class="projection-item">
+                                <div class="period">24 mois</div>
+                                <div class="amount" id="epargne-24m">16 800 €</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -497,6 +615,14 @@
         const savingsRate = document.getElementById('savings-rate');
         const warning = document.getElementById('warning');
 
+        // Éléments de prévisions
+        const vacances6m = document.getElementById('vacances-6m');
+        const vacances12m = document.getElementById('vacances-12m');
+        const vacances24m = document.getElementById('vacances-24m');
+        const epargne6m = document.getElementById('epargne-6m');
+        const epargne12m = document.getElementById('epargne-12m');
+        const epargne24m = document.getElementById('epargne-24m');
+
         function updateBudget() {
             let total = 0;
 
@@ -520,6 +646,17 @@
 
             const epargneAmount = parseFloat(sliders['epargne'].value);
             savingsRate.textContent = Math.round((epargneAmount / salaire) * 100) + '%';
+
+            // Mise à jour des prévisions
+            const vacancesAmount = parseFloat(sliders['vacances'].value);
+
+            vacances6m.textContent = (vacancesAmount * 6).toFixed(0) + ' €';
+            vacances12m.textContent = (vacancesAmount * 12).toFixed(0) + ' €';
+            vacances24m.textContent = (vacancesAmount * 24).toFixed(0) + ' €';
+
+            epargne6m.textContent = (epargneAmount * 6).toFixed(0) + ' €';
+            epargne12m.textContent = (epargneAmount * 12).toFixed(0) + ' €';
+            epargne24m.textContent = (epargneAmount * 24).toFixed(0) + ' €';
 
             // Avertissement si dépassement
             if (total > restantDisponible) {
