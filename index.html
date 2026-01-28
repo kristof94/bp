@@ -313,7 +313,7 @@
             <!-- Budget ajustable -->
             <div class="section">
                 <h2 class="section-title">🎯 Répartition de votre budget</h2>
-                
+
                 <div class="budget-controls">
                     <!-- Vacances -->
                     <div class="budget-item">
@@ -350,6 +350,66 @@
                             <span class="budget-percentage" id="epargne-percent">38%</span>
                         </div>
                     </div>
+
+                    <!-- Restaurant -->
+                    <div class="budget-item">
+                        <label>🍽️ Restaurant & Sorties</label>
+                        <div class="slider-container">
+                            <input type="range" min="0" max="1833" value="150" class="slider" id="restaurant">
+                        </div>
+                        <div class="budget-display">
+                            <span class="budget-value" id="restaurant-value">150,00 €</span>
+                            <span class="budget-percentage" id="restaurant-percent">8%</span>
+                        </div>
+                    </div>
+
+                    <!-- Vêtements -->
+                    <div class="budget-item">
+                        <label>👕 Vêtements</label>
+                        <div class="slider-container">
+                            <input type="range" min="0" max="1833" value="100" class="slider" id="vetements">
+                        </div>
+                        <div class="budget-display">
+                            <span class="budget-value" id="vetements-value">100,00 €</span>
+                            <span class="budget-percentage" id="vetements-percent">5%</span>
+                        </div>
+                    </div>
+
+                    <!-- Santé -->
+                    <div class="budget-item">
+                        <label>💪 Santé & Sport</label>
+                        <div class="slider-container">
+                            <input type="range" min="0" max="1833" value="80" class="slider" id="sante">
+                        </div>
+                        <div class="budget-display">
+                            <span class="budget-value" id="sante-value">80,00 €</span>
+                            <span class="budget-percentage" id="sante-percent">4%</span>
+                        </div>
+                    </div>
+
+                    <!-- Transport -->
+                    <div class="budget-item">
+                        <label>⛽ Essence & Transport</label>
+                        <div class="slider-container">
+                            <input type="range" min="0" max="1833" value="120" class="slider" id="transport">
+                        </div>
+                        <div class="budget-display">
+                            <span class="budget-value" id="transport-value">120,00 €</span>
+                            <span class="budget-percentage" id="transport-percent">7%</span>
+                        </div>
+                    </div>
+
+                    <!-- Divers -->
+                    <div class="budget-item">
+                        <label>🛍️ Divers</label>
+                        <div class="slider-container">
+                            <input type="range" min="0" max="1833" value="83" class="slider" id="divers">
+                        </div>
+                        <div class="budget-display">
+                            <span class="budget-value" id="divers-value">83,00 €</span>
+                            <span class="budget-percentage" id="divers-percent">5%</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="warning" id="warning">
@@ -383,17 +443,29 @@
         const chargesFixes = 1667;
         const restantDisponible = salaire - chargesFixes;
 
-        const vacancesSlider = document.getElementById('vacances');
-        const loisirsSlider = document.getElementById('loisirs');
-        const epargneSlider = document.getElementById('epargne');
+        // Définir toutes les catégories de budget
+        const budgetCategories = [
+            { id: 'vacances', name: 'Vacances' },
+            { id: 'loisirs', name: 'Loisirs' },
+            { id: 'epargne', name: 'Épargne' },
+            { id: 'restaurant', name: 'Restaurant' },
+            { id: 'vetements', name: 'Vêtements' },
+            { id: 'sante', name: 'Santé' },
+            { id: 'transport', name: 'Transport' },
+            { id: 'divers', name: 'Divers' }
+        ];
 
-        const vacancesValue = document.getElementById('vacances-value');
-        const loisirsValue = document.getElementById('loisirs-value');
-        const epargneValue = document.getElementById('epargne-value');
+        // Créer un objet pour stocker les références
+        const sliders = {};
+        const values = {};
+        const percents = {};
 
-        const vacancesPercent = document.getElementById('vacances-percent');
-        const loisirsPercent = document.getElementById('loisirs-percent');
-        const epargnePercent = document.getElementById('epargne-percent');
+        // Récupérer tous les éléments
+        budgetCategories.forEach(cat => {
+            sliders[cat.id] = document.getElementById(cat.id);
+            values[cat.id] = document.getElementById(cat.id + '-value');
+            percents[cat.id] = document.getElementById(cat.id + '-percent');
+        });
 
         const totalBudget = document.getElementById('total-budget');
         const unallocated = document.getElementById('unallocated');
@@ -401,27 +473,28 @@
         const warning = document.getElementById('warning');
 
         function updateBudget() {
-            const vacances = parseFloat(vacancesSlider.value);
-            const loisirs = parseFloat(loisirsSlider.value);
-            const epargne = parseFloat(epargneSlider.value);
+            let total = 0;
 
-            const total = vacances + loisirs + epargne;
+            // Calculer le total et mettre à jour chaque catégorie
+            budgetCategories.forEach(cat => {
+                const amount = parseFloat(sliders[cat.id].value);
+                total += amount;
+
+                // Mise à jour de la valeur
+                values[cat.id].textContent = amount.toFixed(2) + ' €';
+
+                // Mise à jour du pourcentage
+                percents[cat.id].textContent = Math.round((amount / restantDisponible) * 100) + '%';
+            });
+
             const reste = restantDisponible - total;
-
-            // Mise à jour des valeurs
-            vacancesValue.textContent = vacances.toFixed(2) + ' €';
-            loisirsValue.textContent = loisirs.toFixed(2) + ' €';
-            epargneValue.textContent = epargne.toFixed(2) + ' €';
-
-            // Mise à jour des pourcentages
-            vacancesPercent.textContent = Math.round((vacances / restantDisponible) * 100) + '%';
-            loisirsPercent.textContent = Math.round((loisirs / restantDisponible) * 100) + '%';
-            epargnePercent.textContent = Math.round((epargne / restantDisponible) * 100) + '%';
 
             // Mise à jour du résumé
             totalBudget.textContent = total.toFixed(0) + ' €';
             unallocated.textContent = reste.toFixed(0) + ' €';
-            savingsRate.textContent = Math.round((epargne / salaire) * 100) + '%';
+
+            const epargneAmount = parseFloat(sliders['epargne'].value);
+            savingsRate.textContent = Math.round((epargneAmount / salaire) * 100) + '%';
 
             // Avertissement si dépassement
             if (total > restantDisponible) {
@@ -431,9 +504,10 @@
             }
         }
 
-        vacancesSlider.addEventListener('input', updateBudget);
-        loisirsSlider.addEventListener('input', updateBudget);
-        epargneSlider.addEventListener('input', updateBudget);
+        // Ajouter les écouteurs d'événements à tous les sliders
+        budgetCategories.forEach(cat => {
+            sliders[cat.id].addEventListener('input', updateBudget);
+        });
 
         // Initialisation
         updateBudget();
