@@ -15,127 +15,134 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 0;
+            margin: 0;
         }
 
         .container {
             max-width: 900px;
             margin: 0 auto;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 30px;
+            padding: 15px 20px;
             text-align: center;
         }
 
         .header h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.85em;
+            opacity: 0.9;
         }
 
         .content {
-            padding: 30px;
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            padding-bottom: 20px;
         }
 
         .section {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .section-title {
-            font-size: 1.3em;
+            font-size: 1.1em;
             color: #667eea;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
             border-bottom: 2px solid #667eea;
         }
 
         .income-display {
             background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
-            padding: 20px;
-            border-radius: 10px;
-            font-size: 1.5em;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9em;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .income-display .amount {
+            font-size: 1.3em;
+            font-weight: bold;
         }
 
         .charges-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
         .charge-item {
             background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 10px 12px;
+            border-radius: 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-left: 4px solid #dc3545;
+            border-left: 3px solid #dc3545;
         }
 
         .charge-label {
             font-weight: 500;
             color: #333;
+            font-size: 0.9em;
         }
 
         .charge-amount {
             font-weight: bold;
             color: #dc3545;
-            font-size: 1.1em;
+            font-size: 0.95em;
         }
 
         .total-charges {
             background: #dc3545;
             color: white;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 10px;
+            border-radius: 6px;
             text-align: center;
-            font-size: 1.2em;
+            font-size: 1em;
             font-weight: bold;
         }
 
         .remaining-display {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 10px;
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .remaining-display .amount {
-            font-size: 2.5em;
-            font-weight: bold;
-            margin-top: 10px;
+            display: none;
         }
 
         .budget-controls {
             display: grid;
-            gap: 20px;
+            gap: 12px;
         }
 
         .budget-item {
             background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
         }
 
         .budget-item label {
             display: block;
             font-weight: 600;
             color: #333;
-            margin-bottom: 10px;
-            font-size: 1.1em;
+            margin-bottom: 8px;
+            font-size: 0.95em;
         }
 
         .slider-container {
@@ -178,74 +185,157 @@
         }
 
         .budget-value {
-            font-size: 1.5em;
+            font-size: 1.1em;
             font-weight: bold;
             color: #667eea;
         }
 
         .budget-percentage {
-            font-size: 0.9em;
+            font-size: 0.85em;
             color: #666;
         }
 
         .summary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 25px;
-            border-radius: 10px;
-            margin-top: 30px;
+            padding: 12px 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .summary h3 {
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            text-align: center;
+            font-weight: 600;
         }
 
         .summary-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
         }
 
         .summary-item {
             background: rgba(255,255,255,0.2);
-            padding: 15px;
-            border-radius: 8px;
+            padding: 8px;
+            border-radius: 6px;
             text-align: center;
         }
 
         .summary-item .label {
-            font-size: 0.9em;
+            font-size: 0.7em;
             opacity: 0.9;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .summary-item .value {
-            font-size: 1.8em;
+            font-size: 1.1em;
             font-weight: bold;
         }
 
         .warning {
             background: #ff6b6b;
             color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
             text-align: center;
             display: none;
+            font-size: 0.85em;
         }
 
         .warning.active {
             display: block;
         }
 
-        @media (max-width: 768px) {
-            .content {
+        /* Desktop styles */
+        @media (min-width: 768px) {
+            body {
                 padding: 20px;
             }
 
-            .charges-grid {
-                grid-template-columns: 1fr;
+            .container {
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                min-height: auto;
+            }
+
+            .header {
+                padding: 30px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+                margin-bottom: 10px;
+            }
+
+            .header p {
+                font-size: 1em;
+            }
+
+            .content {
+                padding: 30px;
+            }
+
+            .section {
+                margin-bottom: 30px;
+            }
+
+            .section-title {
+                font-size: 1.3em;
+            }
+
+            .summary {
+                position: relative;
+                padding: 25px;
+                margin-top: 30px;
+                border-radius: 10px;
+            }
+
+            .summary h3 {
+                font-size: 1.1em;
+                margin-bottom: 10px;
             }
 
             .summary-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 15px;
+            }
+
+            .summary-item {
+                padding: 15px;
+            }
+
+            .summary-item .label {
+                font-size: 0.9em;
+            }
+
+            .summary-item .value {
+                font-size: 1.8em;
+            }
+
+            .charges-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 15px;
+            }
+
+            .budget-controls {
+                gap: 20px;
+            }
+
+            .budget-item {
+                padding: 20px;
+            }
+
+            .budget-item label {
+                font-size: 1.1em;
+            }
+
+            .budget-value {
+                font-size: 1.5em;
             }
         }
     </style>
@@ -258,11 +348,30 @@
         </div>
 
         <div class="content">
+            <!-- Résumé sticky -->
+            <div class="summary">
+                <h3>📊 Résumé financier</h3>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="label">Budget utilisé</div>
+                        <div class="value" id="total-budget">1 600 €</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">Reste à allouer</div>
+                        <div class="value" id="unallocated">233 €</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">Taux d'épargne</div>
+                        <div class="value" id="savings-rate">38%</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Salaire -->
             <div class="section">
                 <div class="income-display">
-                    <div>Salaire mensuel</div>
-                    <div style="font-size: 1.5em; margin-top: 10px;">3 500,00 €</div>
+                    <span>💰 Salaire mensuel</span>
+                    <span class="amount">3 500 €</span>
                 </div>
             </div>
 
@@ -414,25 +523,6 @@
 
                 <div class="warning" id="warning">
                     ⚠️ Attention ! Votre budget dépasse le montant disponible !
-                </div>
-            </div>
-
-            <!-- Résumé -->
-            <div class="summary">
-                <h3 style="text-align: center; margin-bottom: 10px;">📊 Résumé financier</h3>
-                <div class="summary-grid">
-                    <div class="summary-item">
-                        <div class="label">Budget utilisé</div>
-                        <div class="value" id="total-budget">1 600 €</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="label">Reste à allouer</div>
-                        <div class="value" id="unallocated">233 €</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="label">Taux d'épargne</div>
-                        <div class="value" id="savings-rate">38%</div>
-                    </div>
                 </div>
             </div>
         </div>
