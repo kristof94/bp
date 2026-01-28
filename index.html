@@ -45,6 +45,23 @@
             opacity: 0.9;
         }
 
+        .nav-link {
+            display: inline-block;
+            background: rgba(255,255,255,0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.85em;
+            margin-top: 10px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.4);
+        }
+
         .content {
             flex: 1;
             overflow-y: auto;
@@ -305,6 +322,138 @@
             font-weight: bold;
         }
 
+        .mode-toggle {
+            background: rgba(255,255,255,0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: none;
+            color: white;
+            font-size: 0.85em;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .mode-toggle:active {
+            background: rgba(255,255,255,0.4);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .goal-input-section {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .goal-input-section h3 {
+            font-size: 1em;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+            opacity: 0.95;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            background: white;
+        }
+
+        .goal-result {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .goal-result h3 {
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            opacity: 0.95;
+        }
+
+        .goal-result .amount {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .adjusted-budgets {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .adjusted-budgets h3 {
+            font-size: 1em;
+            color: #667eea;
+            margin-bottom: 12px;
+        }
+
+        .adjusted-budget-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+        .adjusted-budget-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .adjusted-budget-item .label {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        .adjusted-budget-item .value {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
         /* Desktop styles */
         @media (min-width: 768px) {
             body {
@@ -412,6 +561,40 @@
             .projection-item .amount {
                 font-size: 1.3em;
             }
+
+            .mode-toggle {
+                font-size: 0.9em;
+                padding: 10px 20px;
+            }
+
+            .goal-input-section {
+                padding: 20px;
+            }
+
+            .goal-input-section h3 {
+                font-size: 1.2em;
+                margin-bottom: 15px;
+            }
+
+            .goal-result {
+                padding: 25px;
+            }
+
+            .goal-result h3 {
+                font-size: 1em;
+            }
+
+            .goal-result .amount {
+                font-size: 2.5em;
+            }
+
+            .adjusted-budgets {
+                padding: 20px;
+            }
+
+            .adjusted-budgets h3 {
+                font-size: 1.2em;
+            }
         }
     </style>
 </head>
@@ -420,6 +603,7 @@
         <div class="header">
             <h1>💰 Mon Budget Mensuel</h1>
             <p>Gérez vos finances intelligemment</p>
+            <a href="goal.html" class="nav-link">🎯 Mode Objectif d'épargne</a>
         </div>
 
         <div class="content">
@@ -578,6 +762,108 @@
                             <div class="projection-item">
                                 <div class="period">24 mois</div>
                                 <div class="amount" id="epargne-24m">16 800 €</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Page 2 : Objectif d'épargne -->
+            <div class="page" id="page-goal">
+                <!-- Résumé sticky -->
+                <div class="summary">
+                    <h3>🎯 Objectif d'épargne</h3>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <div class="label">Objectif</div>
+                            <div class="value" id="goal-target">10 000 €</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="label">Durée</div>
+                            <div class="value" id="goal-duration">12 mois</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="label">Par mois</div>
+                            <div class="value" id="goal-monthly">833 €</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Saisie de l'objectif -->
+                <div class="section">
+                    <div class="goal-input-section">
+                        <h3>💎 Définir mon objectif</h3>
+                        <div class="input-group">
+                            <label>Montant à économiser (€)</label>
+                            <input type="number" id="goal-amount" value="10000" min="0" step="100">
+                        </div>
+                        <div class="input-group">
+                            <label>Durée (mois)</label>
+                            <select id="goal-months">
+                                <option value="3">3 mois</option>
+                                <option value="6">6 mois</option>
+                                <option value="12" selected>12 mois</option>
+                                <option value="18">18 mois</option>
+                                <option value="24">24 mois</option>
+                                <option value="36">36 mois</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Résultat -->
+                <div class="section">
+                    <div class="goal-result">
+                        <h3>Épargne mensuelle nécessaire</h3>
+                        <div class="amount" id="goal-monthly-display">833 €</div>
+                    </div>
+                </div>
+
+                <!-- Message si impossible -->
+                <div class="warning" id="goal-warning">
+                    ⚠️ Objectif impossible ! L'épargne mensuelle dépasse votre budget disponible.
+                </div>
+
+                <!-- Budgets ajustés -->
+                <div class="section" id="adjusted-section">
+                    <div class="adjusted-budgets">
+                        <h3>🎯 Budgets ajustés automatiquement</h3>
+                        <div class="adjusted-budget-item">
+                            <span class="label">💎 Épargne</span>
+                            <span class="value" id="adjusted-epargne">833 €</span>
+                        </div>
+                        <div class="adjusted-budget-item">
+                            <span class="label">✈️ Vacances</span>
+                            <span class="value" id="adjusted-vacances">500 €</span>
+                        </div>
+                        <div class="adjusted-budget-item">
+                            <span class="label">🎮 Loisirs</span>
+                            <span class="value" id="adjusted-loisirs">500 €</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prévisions avec objectif -->
+                <div class="section">
+                    <div class="projections">
+                        <h3>📊 Projection d'épargne</h3>
+
+                        <div class="projection-category">
+                            <div class="projection-title">💎 Évolution de l'épargne</div>
+                            <div class="projection-grid">
+                                <div class="projection-item">
+                                    <div class="period">6 mois</div>
+                                    <div class="amount" id="goal-epargne-6m">5 000 €</div>
+                                </div>
+                                <div class="projection-item">
+                                    <div class="period">12 mois</div>
+                                    <div class="amount" id="goal-epargne-12m">10 000 €</div>
+                                </div>
+                                <div class="projection-item">
+                                    <div class="period">24 mois</div>
+                                    <div class="amount" id="goal-epargne-24m">20 000 €</div>
+                                </div>
                             </div>
                         </div>
                     </div>
