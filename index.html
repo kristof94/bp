@@ -459,66 +459,6 @@
                             <span class="budget-percentage" id="epargne-percent">38%</span>
                         </div>
                     </div>
-
-                    <!-- Restaurant -->
-                    <div class="budget-item">
-                        <label>🍽️ Restaurant & Sorties</label>
-                        <div class="slider-container">
-                            <input type="range" min="0" max="1833" value="150" class="slider" id="restaurant">
-                        </div>
-                        <div class="budget-display">
-                            <span class="budget-value" id="restaurant-value">150,00 €</span>
-                            <span class="budget-percentage" id="restaurant-percent">8%</span>
-                        </div>
-                    </div>
-
-                    <!-- Vêtements -->
-                    <div class="budget-item">
-                        <label>👕 Vêtements</label>
-                        <div class="slider-container">
-                            <input type="range" min="0" max="1833" value="100" class="slider" id="vetements">
-                        </div>
-                        <div class="budget-display">
-                            <span class="budget-value" id="vetements-value">100,00 €</span>
-                            <span class="budget-percentage" id="vetements-percent">5%</span>
-                        </div>
-                    </div>
-
-                    <!-- Santé -->
-                    <div class="budget-item">
-                        <label>💪 Santé & Sport</label>
-                        <div class="slider-container">
-                            <input type="range" min="0" max="1833" value="80" class="slider" id="sante">
-                        </div>
-                        <div class="budget-display">
-                            <span class="budget-value" id="sante-value">80,00 €</span>
-                            <span class="budget-percentage" id="sante-percent">4%</span>
-                        </div>
-                    </div>
-
-                    <!-- Transport -->
-                    <div class="budget-item">
-                        <label>⛽ Essence & Transport</label>
-                        <div class="slider-container">
-                            <input type="range" min="0" max="1833" value="120" class="slider" id="transport">
-                        </div>
-                        <div class="budget-display">
-                            <span class="budget-value" id="transport-value">120,00 €</span>
-                            <span class="budget-percentage" id="transport-percent">7%</span>
-                        </div>
-                    </div>
-
-                    <!-- Divers -->
-                    <div class="budget-item">
-                        <label>🛍️ Divers</label>
-                        <div class="slider-container">
-                            <input type="range" min="0" max="1833" value="83" class="slider" id="divers">
-                        </div>
-                        <div class="budget-display">
-                            <span class="budget-value" id="divers-value">83,00 €</span>
-                            <span class="budget-percentage" id="divers-percent">5%</span>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="warning" id="warning">
@@ -537,12 +477,7 @@
         const budgetCategories = [
             { id: 'vacances', name: 'Vacances' },
             { id: 'loisirs', name: 'Loisirs' },
-            { id: 'epargne', name: 'Épargne' },
-            { id: 'restaurant', name: 'Restaurant' },
-            { id: 'vetements', name: 'Vêtements' },
-            { id: 'sante', name: 'Santé' },
-            { id: 'transport', name: 'Transport' },
-            { id: 'divers', name: 'Divers' }
+            { id: 'epargne', name: 'Épargne' }
         ];
 
         // Créer un objet pour stocker les références
